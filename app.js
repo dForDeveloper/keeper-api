@@ -33,9 +33,11 @@ app.post('/api/v1/notes', (req, res) => {
 });
 
 app.get('/api/v1/notes/:id', (req, res) => {
+  const { notes } = app.locals;
   const { id } = req.params;
-  if (!notes.find(note => note.id === id)) return send404(res);
-  send200(res);
+  const note = notes.find(note => note.id === id);
+  if (!note) return send404(res);
+  res.status(200).json(note);
 });
 
 app.delete('/api/v1/notes/:id', (req, res) => {
