@@ -47,9 +47,10 @@ describe('API', () => {
     });
     
     it('should respond with 422 and a message', async () => {
-      const response = await request(app).post(path).send({ sadfadsf: 'asdf' });
+      const expected = 'Please send a note with a title and list items';
+      const response = await request(app).post(path).send({ sadfadsf: 'adf' });
       expect(response.status).toEqual(422);
-      expect(response.body).toEqual('Please send a note with a title and list items');
+      expect(response.body).toEqual(expected);
     });
   });
 
@@ -61,7 +62,22 @@ describe('API', () => {
     });
 
     it('should respond with 404 and a message', async () => {
-      const response = await request(app).get(path + 'akjd');
+      const response = await request(app).get(path + 'ajd');
+      expect(response.status).toEqual(404);
+      expect(response.body).toEqual('Note not found');
+    });
+  });
+
+  describe('delete /api/v1/notes/:id', () => {
+    it('should respond with 200 and all of the remaining notes', async () => {
+      const expected = app.locals.notes.slice(1);
+      const response = await request(app).delete(path + 'ieF');
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual(expected);
+    });
+
+    it('should respond with 404 and a message', async () => {
+      const response = await request(app).delete(path + 'asdf');
       expect(response.status).toEqual(404);
       expect(response.body).toEqual('Note not found');
     });
