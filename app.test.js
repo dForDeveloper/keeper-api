@@ -82,4 +82,31 @@ describe('API', () => {
       expect(response.body).toEqual('Note not found');
     });
   });
+
+  describe('put /api/v1/notes/:id', () => {
+    const note = { title: 'New title', listItems: [] };
+    
+    it('should respond with 200 and all of the notes', async () => {
+      const expected = [
+        { id: 'ieF', ...note },
+        ...app.locals.notes.slice(1)
+      ];
+      const response = await request(app).put(path + 'ieF').send(note);
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual(expected);
+    });
+
+    it('should respond with 404 and a message', async () => {
+      const response = await request(app).put(path + 'asd').send(note);
+      expect(response.status).toEqual(404);
+      expect(response.body).toEqual('Note not found');
+    });
+
+    it('should respond with 422 and a message', async () => {
+      const expected = 'Please send a note with a title and list items';
+      const response = await request(app).put(path + 'ieF').send({});
+      expect(response.status).toEqual(422);
+      expect(response.body).toEqual(expected);
+    });
+  });
 });
