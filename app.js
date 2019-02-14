@@ -17,19 +17,16 @@ const send404 = (res) => (
   res.status(404).json('Note not found')
 );
 
-const send200 = (res) => (
-  res.status(200).json(app.locals.notes)
-);
-
-app.get('/api/v1/notes', (req, res) => send200(res));
+app.get('/api/v1/notes', (req, res) => res.status(200).json(app.locals.notes));
 
 app.post('/api/v1/notes', (req, res) => {
   const { title, listItems } = req.body;
+  const { notes } = app.locals;
   if (!title || !listItems) return send422(res);
   const id = shortid.generate();
   const newNote = { id, title, listItems };
-  app.locals.notes.push(newNote);
-  res.status(201).json(app.locals.notes);
+  notes.push(newNote);
+  res.status(201).json(notes[notes.length - 1]);
 });
 
 app.get('/api/v1/notes/:id', (req, res) => {
@@ -47,7 +44,7 @@ app.delete('/api/v1/notes/:id', (req, res) => {
   app.locals.notes = notes.filter(note => {
     return note.id !== id;
   });
-  send200(res);
+  res.sendStatus(204);
 });
 
 app.put('/api/v1/notes/:id', (req, res) => {
@@ -59,7 +56,7 @@ app.put('/api/v1/notes/:id', (req, res) => {
   app.locals.notes = notes.map(note => {
     return (note.id === id) ? { title, listItems, id } : note;
   });
-  res.status(200).json(app.locals.notes);
+  res.sendStatus(204);
 });
 
 export default app;

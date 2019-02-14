@@ -38,7 +38,7 @@ describe('API', () => {
 
   describe('post /api/v1/notes', () => {
     it('should respond with 201 and all the notes', async () => {
-      const expected = [...notes, { id: 'jpV', title: 'new', listItems: [] }];
+      const expected = { id: 'jpV', title: 'new', listItems: [] };
       shortid.generate = jest.fn().mockImplementationOnce(() => 'jpV');
       const newNote = { title: 'new', listItems: [] };
       const response = await request(app).post(path).send(newNote);
@@ -70,10 +70,8 @@ describe('API', () => {
 
   describe('delete /api/v1/notes/:id', () => {
     it('should respond with 200 and all of the remaining notes', async () => {
-      const expected = app.locals.notes.slice(1);
       const response = await request(app).delete(path + 'ieF');
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual(expected);
+      expect(response.status).toEqual(204);
     });
 
     it('should respond with 404 and a message', async () => {
@@ -87,13 +85,8 @@ describe('API', () => {
     const note = { title: 'New title', listItems: [] };
     
     it('should respond with 200 and all of the notes', async () => {
-      const expected = [
-        { id: 'ieF', ...note },
-        ...app.locals.notes.slice(1)
-      ];
       const response = await request(app).put(path + 'ieF').send(note);
-      expect(response.status).toEqual(200);
-      expect(response.body).toEqual(expected);
+      expect(response.status).toEqual(204);
     });
 
     it('should respond with 404 and a message', async () => {
