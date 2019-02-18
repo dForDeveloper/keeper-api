@@ -10,7 +10,7 @@ app.use(express.json());
 app.locals.notes = [];
 
 const send422 = (res) => (
-  res.status(422).json('Please send a note with a title and list items')
+  res.status(422).json('Please send a note with a title, list items, and a color')
 );
 
 const send404 = (res) => (
@@ -22,7 +22,7 @@ app.get('/api/v1/notes', (req, res) => res.status(200).json(app.locals.notes));
 app.post('/api/v1/notes', (req, res) => {
   const { title, listItems, color } = req.body;
   const { notes } = app.locals;
-  if (!title || !listItems) return send422(res);
+  if (!title || !listItems || !color) return send422(res);
   const id = shortid.generate();
   const newNote = { id, title, listItems, color };
   notes.push(newNote);
@@ -52,7 +52,7 @@ app.put('/api/v1/notes/:id', (req, res) => {
   const { title, listItems, color } = req.body;
   const { id } = req.params;
   if (!notes.find(note => note.id === id)) return send404(res);
-  if (!title || !listItems) return send422(res);
+  if (!title || !listItems || !color) return send422(res);
   app.locals.notes = notes.map(note => {
     return (note.id === id) ? { title, listItems, id, color } : note;
   });
