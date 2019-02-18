@@ -15,14 +15,16 @@ describe('API', () => {
         listItems: [
           { id: 'rDe', description: 'item1 for 1st note', isComplete: false },
           { id: 'oeK', description: 'item2 for 1st note', isComplete: true }
-        ]
+        ],
+        color: 'lavender'
       },
       {
         id: 'Ahd',
         title: 'second note',
         listItems: [
           { id: 'VmE', description: 'item1 for 2nd note', isComplete: true }
-        ]
+        ],
+        color: 'blue'
       }
     ]
     app.locals.notes = notes;
@@ -37,17 +39,17 @@ describe('API', () => {
   });
 
   describe('post /api/v1/notes', () => {
-    it('should respond with 201 and all the notes', async () => {
-      const expected = { id: 'jpV', title: 'new', listItems: [] };
+    it('should respond with 201 and the note', async () => {
+      const expected = { id: 'jpV', title: 'new', listItems: [], color: 'green' };
       shortid.generate = jest.fn().mockImplementationOnce(() => 'jpV');
-      const newNote = { title: 'new', listItems: [] };
+      const newNote = { title: 'new', listItems: [], color: 'green' };
       const response = await request(app).post(path).send(newNote);
       expect(response.status).toEqual(201);
       expect(response.body).toEqual(expected);
     });
     
     it('should respond with 422 and a message', async () => {
-      const expected = 'Please send a note with a title and list items';
+      const expected = 'Please send a note with a title, list items, and a color';
       const response = await request(app).post(path).send({ sadfadsf: 'adf' });
       expect(response.status).toEqual(422);
       expect(response.body).toEqual(expected);
@@ -69,7 +71,7 @@ describe('API', () => {
   });
 
   describe('delete /api/v1/notes/:id', () => {
-    it('should respond with 200 and all of the remaining notes', async () => {
+    it('should respond with 204', async () => {
       const response = await request(app).delete(path + 'ieF');
       expect(response.status).toEqual(204);
     });
@@ -82,9 +84,9 @@ describe('API', () => {
   });
 
   describe('put /api/v1/notes/:id', () => {
-    const note = { title: 'New title', listItems: [] };
+    const note = { title: 'New title', listItems: [], color: 'new color' };
     
-    it('should respond with 200 and all of the notes', async () => {
+    it('should respond with 204', async () => {
       const response = await request(app).put(path + 'ieF').send(note);
       expect(response.status).toEqual(204);
     });
@@ -96,7 +98,7 @@ describe('API', () => {
     });
 
     it('should respond with 422 and a message', async () => {
-      const expected = 'Please send a note with a title and list items';
+      const expected = 'Please send a note with a title, list items, and a color';
       const response = await request(app).put(path + 'ieF').send({});
       expect(response.status).toEqual(422);
       expect(response.body).toEqual(expected);
