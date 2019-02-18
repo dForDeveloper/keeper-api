@@ -20,11 +20,11 @@ const send404 = (res) => (
 app.get('/api/v1/notes', (req, res) => res.status(200).json(app.locals.notes));
 
 app.post('/api/v1/notes', (req, res) => {
-  const { title, listItems } = req.body;
+  const { title, listItems, color } = req.body;
   const { notes } = app.locals;
   if (!title || !listItems) return send422(res);
   const id = shortid.generate();
-  const newNote = { id, title, listItems };
+  const newNote = { id, title, listItems, color };
   notes.push(newNote);
   res.status(201).json(notes[notes.length - 1]);
 });
@@ -49,12 +49,12 @@ app.delete('/api/v1/notes/:id', (req, res) => {
 
 app.put('/api/v1/notes/:id', (req, res) => {
   const { notes } = app.locals;
-  const { title, listItems } = req.body;
+  const { title, listItems, color } = req.body;
   const { id } = req.params;
   if (!notes.find(note => note.id === id)) return send404(res);
   if (!title || !listItems) return send422(res);
   app.locals.notes = notes.map(note => {
-    return (note.id === id) ? { title, listItems, id } : note;
+    return (note.id === id) ? { title, listItems, id, color } : note;
   });
   res.sendStatus(204);
 });
