@@ -59,4 +59,11 @@ app.put('/api/v1/notes/:id', (req, res) => {
   res.sendStatus(204);
 });
 
+app.put('/api/v1/notes', (req, res) => {
+  const { notes } = req.body;
+  if (!notes) return send422(res);
+  app.locals.notes = notes;
+  res.sendStatus(204);
+});
+
 export default app;
