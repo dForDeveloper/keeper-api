@@ -104,4 +104,23 @@ describe('API', () => {
       expect(response.body).toEqual(expected);
     });
   });
+
+  describe('put /api/v1/notes', () => {
+    const notes = [
+      { title: 'New title', listItems: [], color: 'new color' },
+      { title: '2nd title', listItems: [], color: 'aqua' }
+    ];
+    
+    it('should respond with 204', async () => {
+      const response = await request(app).put(path).send({ notes });
+      expect(response.status).toEqual(204);
+    });
+
+    it('should respond with 422 and a message', async () => {
+      const expected = 'Please send a note with a title, list items, and a color';
+      const response = await request(app).put(path).send({});
+      expect(response.status).toEqual(422);
+      expect(response.body).toEqual(expected);
+    });
+  });
 });
