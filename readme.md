@@ -9,7 +9,7 @@ Run `npm install` from the root directory
 Run `npm start` and visit localhost:3000 in your browser  
 
 #### Back-end
-Clone this repo 
+Clone this repo   
 Run `npm install` from the root directory  
 Run `npm start` and visit localhost:3001 in your browser  
 
@@ -32,3 +32,6 @@ Run `npm test` from the associated root directory
 [Jeo D](https://github.com/dForDeveloper)  
 [Tiffany Bachmann](https://github.com/trbachmann)  
 [Whitney Burton](https://github.com/whitneyburton)  
+
+### Front-end Preview:
+![Keeper video](/keeper-gif-med.gif)
