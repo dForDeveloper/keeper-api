@@ -29,6 +29,13 @@ app.post('/api/v1/notes', (req, res) => {
   res.status(201).json(notes[notes.length - 1]);
 });
 
+app.put('/api/v1/notes', (req, res) => {
+  const { notes } = req.body;
+  if (!notes) return send422(res);
+  app.locals.notes = notes;
+  res.sendStatus(204);
+});
+
 app.get('/api/v1/notes/:id', (req, res) => {
   const { notes } = app.locals;
   const { id } = req.params;
@@ -40,10 +47,12 @@ app.get('/api/v1/notes/:id', (req, res) => {
 app.delete('/api/v1/notes/:id', (req, res) => {
   const { notes } = app.locals;
   const { id } = req.params;
-  if (!notes.find(note => note.id === id)) return send404(res);
+  let found = false;
   app.locals.notes = notes.filter(note => {
+    note.id === id && (found = true);
     return note.id !== id;
   });
+  if (!found) return send404(res);
   res.sendStatus(204);
 });
 
@@ -51,18 +60,13 @@ app.put('/api/v1/notes/:id', (req, res) => {
   const { notes } = app.locals;
   const { title, listItems, color } = req.body;
   const { id } = req.params;
-  if (!notes.find(note => note.id === id)) return send404(res);
   if (!title || !listItems || !color) return send422(res);
+  let found = false;
   app.locals.notes = notes.map(note => {
+    note.id === id && (found = true);
     return (note.id === id) ? { title, listItems, id, color } : note;
   });
-  res.sendStatus(204);
-});
-
-app.put('/api/v1/notes', (req, res) => {
-  const { notes } = req.body;
-  if (!notes) return send422(res);
-  app.locals.notes = notes;
+  if (!found) return send404(res);
   res.sendStatus(204);
 });
 
