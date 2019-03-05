@@ -6,3 +6,6 @@
 
 # coverage
 /coverage
+
+# env
+.env
