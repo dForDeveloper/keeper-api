@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import shortid from 'shortid';
+import { findOrCreateUser } from './db';
 
 const app = express();
 
@@ -68,6 +69,10 @@ app.put('/api/v1/notes/:id', (req, res) => {
   });
   if (!found) return send404(res);
   res.sendStatus(204);
+});
+
+app.post('/api/v1/users', (req, res) => {
+  findOrCreateUser(req.body, res);
 });
 
 export default app;
