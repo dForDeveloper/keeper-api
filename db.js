@@ -42,3 +42,10 @@ export const deleteNote = async (user, noteID) => {
   );
   return result.matchedCount;
 }
+
+export const updateNotes = async (user, notes) => {
+  client.db('keeper').collection('users').updateOne(
+    { uid: user.uid },
+    { $set: { notes } }
+  );
+}

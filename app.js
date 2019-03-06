@@ -7,8 +7,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.locals.notes = [];
-
 const send422 = (res) => (
   res.status(422).json('Please send a note with a title, list items, and a color')
 );
@@ -26,10 +24,10 @@ app.post('/api/v1/notes', (req, res) => {
   res.status(201).json(newNote);
 });
 
-app.put('/api/v1/notes', (req, res) => {
-  const { notes } = req.body;
+app.put('/api/v1/notes', async (req, res) => {
+  const { notes, user } = req.body;
   if (!notes) return send422(res);
-  app.locals.notes = notes;
+  await db.updateNotes(user, notes);
   res.sendStatus(204);
 });
 
