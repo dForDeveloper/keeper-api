@@ -55,16 +55,12 @@ app.delete('/api/v1/notes/:id', (req, res) => {
   res.sendStatus(204);
 });
 
-app.put('/api/v1/notes/:id', (req, res) => {
-  const { notes } = app.locals;
-  const { title, listItems, color } = req.body;
+app.put('/api/v1/notes/:id', async (req, res) => {
+  const { title, listItems, color, user } = req.body;
   const { id } = req.params;
+  const editedNote = { title, listItems, id, color };
   if (!title || !listItems || !color) return send422(res);
-  let found = false;
-  app.locals.notes = notes.map(note => {
-    note.id === id && (found = true);
-    return (note.id === id) ? { title, listItems, id, color } : note;
-  });
+  const found = await db.editNote(user, editedNote)
   if (!found) return send404(res);
   res.sendStatus(204);
 });

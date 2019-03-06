@@ -20,7 +20,17 @@ export const findOrCreateUser = async (user) => {
 }
 
 export const createNote = (user, note) => {
-  const db = client.db('keeper');
-  const collection = db.collection('users');
-  collection.updateOne({ uid: user.uid }, { $push: { notes: note } });
+  client.db('keeper').collection('users').updateOne(
+    { uid: user.uid },
+    { $push: { notes: note } }
+  );
+}
+
+export const editNote = async (user, note) => {
+  const result = await client.db('keeper').collection('users').updateOne(
+    { uid: user.uid },
+    { $set: { 'notes.$[note]': note } },
+    { arrayFilters: [{ 'note.id': note.id }] }
+  );
+  return result.matchedCount;
 }
