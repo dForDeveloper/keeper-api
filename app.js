@@ -1,10 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import shortid from 'shortid';
-import { findOrCreateUser } from './db';
+import * as db from './db';
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
@@ -21,13 +20,12 @@ const send404 = (res) => (
 app.get('/api/v1/notes', (req, res) => res.status(200).json(app.locals.notes));
 
 app.post('/api/v1/notes', (req, res) => {
-  const { title, listItems, color } = req.body;
-  const { notes } = app.locals;
+  const { title, listItems, color, user } = req.body;
   if (!title || !listItems || !color) return send422(res);
   const id = shortid.generate();
   const newNote = { id, title, listItems, color };
-  notes.push(newNote);
-  res.status(201).json(notes[notes.length - 1]);
+  db.createNote(user, newNote);
+  res.status(201).json(newNote);
 });
 
 app.put('/api/v1/notes', (req, res) => {
@@ -71,8 +69,9 @@ app.put('/api/v1/notes/:id', (req, res) => {
   res.sendStatus(204);
 });
 
-app.post('/api/v1/users', (req, res) => {
-  findOrCreateUser(req.body, res);
+app.post('/api/v1/users', async (req, res) => {
+  const user = await db.findOrCreateUser(req.body);
+  res.status(200).json(user);
 });
 
 export default app;
