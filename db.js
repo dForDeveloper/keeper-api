@@ -34,3 +34,11 @@ export const editNote = async (user, note) => {
   );
   return result.matchedCount;
 }
+
+export const deleteNote = async (user, noteID) => {
+  const result = await client.db('keeper').collection('users').updateOne(
+    { uid: user.uid },
+    { $pull: { notes: { id: noteID } } }
+  );
+  return result.matchedCount;
+}

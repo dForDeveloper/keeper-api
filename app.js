@@ -17,8 +17,6 @@ const send404 = (res) => (
   res.status(404).json('Note not found')
 );
 
-app.get('/api/v1/notes', (req, res) => res.status(200).json(app.locals.notes));
-
 app.post('/api/v1/notes', (req, res) => {
   const { title, listItems, color, user } = req.body;
   if (!title || !listItems || !color) return send422(res);
@@ -35,22 +33,10 @@ app.put('/api/v1/notes', (req, res) => {
   res.sendStatus(204);
 });
 
-app.get('/api/v1/notes/:id', (req, res) => {
-  const { notes } = app.locals;
+app.delete('/api/v1/notes/:id', async (req, res) => {
+  const { user } = req.body;
   const { id } = req.params;
-  const note = notes.find(note => note.id === id);
-  if (!note) return send404(res);
-  res.status(200).json(note);
-});
-
-app.delete('/api/v1/notes/:id', (req, res) => {
-  const { notes } = app.locals;
-  const { id } = req.params;
-  let found = false;
-  app.locals.notes = notes.filter(note => {
-    note.id === id && (found = true);
-    return note.id !== id;
-  });
+  const found = await db.deleteNote(user, id);
   if (!found) return send404(res);
   res.sendStatus(204);
 });
